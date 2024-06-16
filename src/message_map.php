@@ -24,16 +24,21 @@ class message_map extends DBObject {
     
     static public function map(int $origin_chat_id, int $origin_message_id, $forwarded_chat_id, $forwarded_message_id) {
         
-        DB::beginTransaction();
+        if (!DB::inTransaction()) {
+            DB::beginTransaction();
+            $commit = true;
+        } else {
+            $commit = false;
+        }
         try {
             $origin = new message_map(['chat_id' => $origin_chat_id, 'message_id' => $origin_message_id, 'origin' => null], true);
             $origin->isNew() && $origin->write();
 
             $forwarded = new message_map(['chat_id' => $forwarded_chat_id, 'message_id' => $forwarded_message_id, 'origin' => $origin->id], true);
             $forwarded->isNew() && $forwarded->write();
-            DB::commit();
+            $commit && DB::commit();
         } catch (\Exception $e) {
-            DB::rollBack();
+            $commit && DB::rollBack();
             throw $e;
         }
     }
