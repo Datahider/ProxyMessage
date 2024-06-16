@@ -4,6 +4,8 @@ use losthost\ProxyMessage\message_map;
 use losthost\DB\DB;
 use TelegramBot\Api\BotApi;
 use losthost\ProxyMessage\Proxy;
+use losthost\ProxyMessage\MessageText;
+use TelegramBot\Api\Types\MessageEntity;
 
 require 'vendor/autoload.php';
 require 'etc/config.php';
@@ -21,17 +23,27 @@ echo message_map::find(3, 222, 1), "\n";
 
 $api = new BotApi($bot_token);
 $api->setCurlOption(CURLOPT_CAINFO, $ca_cert);
-$proxy = new Proxy($api);
 
-$updates = $api->getUpdates();
+$italic = new MessageEntity();
+$italic->setType('italic');
+$italic->setOffset(0);
+$italic->setLength(mb_strlen("Префикс:"));
 
-echo count($updates), "\n";
+$prefix = new MessageText("Префикс:\n", [$italic]);
+$proxy = new Proxy($api, $prefix);
 
-foreach ($updates as $update) {
-    $message = $update->getMessage();
-    if ($message && $message->getChat()->getId() == $bot_chat) {
-        $proxy->proxy($message, $test_chat, $test_thread);
-    } elseif ($message && $message->getChat()->getId() == $test_chat && $message->getMessageThreadId() == $test_thread) {
-        $proxy->proxy($message, $bot_chat);
+$last_update = 0;
+
+while (true) {
+    $updates = $api->getUpdates($last_update+1, 100, 10);
+    foreach ($updates as $update) {
+        $last_update = $update->getUpdateId();
+        
+        $message = $update->getMessage();
+        if ($message && $message->getChat()->getId() == $bot_chat) {
+            $proxy->proxy($message, $test_chat, $test_thread);
+        } elseif ($message && $message->getChat()->getId() == $test_chat && $message->getMessageThreadId() == $test_thread) {
+            $proxy->proxy($message, $bot_chat);
+        }
     }
 }
