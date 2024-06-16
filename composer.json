@@ -1,0 +1,20 @@
+{
+    "name": "losthost/proxy-message",
+    "description": "Proxies received message of class \\TelegramBot\\Api\\Types\\Message to the given chat.",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "drweb",
+            "email": "pio@pio.su"
+        }
+    ],
+    "require": {
+        "telegram-bot/api": "^2.6",
+        "losthost/db": "^v3"
+    },
+    "autoload": {
+        "psr-4": {
+            "losthost\\ProxyMessage\\": "src"
+        }
+    }
+}

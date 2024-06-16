@@ -1,0 +1,146 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "6f94ef0a5df265794c9e7a4a9ac9375f",
+    "packages": [
+        {
+            "name": "losthost/db",
+            "version": "v3.0.12-beta",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Datahider/DB.git",
+                "reference": "a4fc9d668945498180e1f7e20265e4aaf866a828"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Datahider/DB/zipball/a4fc9d668945498180e1f7e20265e4aaf866a828",
+                "reference": "a4fc9d668945498180e1f7e20265e4aaf866a828",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "10.4.2"
+            },
+            "type": "class",
+            "autoload": {
+                "psr-4": {
+                    "losthost\\DB\\": "src",
+                    "losthost\\DB\\test\\": "test"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Peter Ioannidis",
+                    "email": "pio@pio.su",
+                    "homepage": "https://i.pio.su",
+                    "role": "Ideologist"
+                }
+            ],
+            "description": "Database access with so called DB Objects (descendants of class DBObject)",
+            "homepage": "https://github.com/datahider/DB",
+            "keywords": [
+                "database",
+                "db"
+            ],
+            "support": {
+                "issues": "https://github.com/Datahider/DB/issues",
+                "source": "https://github.com/Datahider/DB/tree/v3.0.12-beta"
+            },
+            "time": "2024-06-01T15:12:44+00:00"
+        },
+        {
+            "name": "telegram-bot/api",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TelegramBot/Api.git",
+                "reference": "fcc024143015fbb522ae602f307cdd562833befb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TelegramBot/Api/zipball/fcc024143015fbb522ae602f307cdd562833befb",
+                "reference": "fcc024143015fbb522ae602f307cdd562833befb",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~3.28.0",
+                "guzzlehttp/guzzle": "^7.0",
+                "php-http/multipart-stream-builder": "^1.0",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0",
+                "symfony/http-client": "^4.3 | ^5.0 | ^6.0",
+                "symfony/mime": "^4.3 | ^5.0 | ^6.0",
+                "symfony/phpunit-bridge": "*",
+                "vimeo/psalm": "^5.9"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "To use guzzlehttp/guzzle psr implementation",
+                "php-http/multipart-stream-builder": "To use psr/http-client",
+                "psr/http-client": "To use psr/http-client",
+                "psr/http-factory": "To use psr/http-client",
+                "symfony/http-client": "To use symfony/http-client",
+                "symfony/mime": "To use symfony/http-client"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "TelegramBot\\Api\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ilya Gusev",
+                    "email": "mail@igusev.ru",
+                    "homepage": "https://php-cat.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Wrapper for Telegram Bot API",
+            "homepage": "https://github.com/TelegramBot/Api",
+            "keywords": [
+                "bot",
+                "bot api",
+                "php",
+                "telegram"
+            ],
+            "support": {
+                "issues": "https://github.com/TelegramBot/Api/issues",
+                "source": "https://github.com/TelegramBot/Api/tree/master"
+            },
+            "time": "2023-09-29T10:23:04+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
+}
