@@ -103,7 +103,9 @@ class Proxy {
     
     protected function getFileToSend(string $file_id) {
 
+        error_log("file_id = $file_id");
         if (!isset($this->alternative_api)) {
+            error_log("return file_id = $file_id");
             return $file_id;
         }
         
@@ -111,6 +113,7 @@ class Proxy {
         $file_data = $this->alternative_api->downloadFile($file_id);
         file_put_contents($tmpfile, $file_data);
         
+        error_log("return tmpfile = $tmpfile");
         $this->tmpfiles[] = $tmpfile;
         return new \CURLFile($tmpfile);
     }
