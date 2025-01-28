@@ -15,6 +15,8 @@ class Proxy {
     
     protected BotApi $api;
     protected MessageText $prefix;
+    protected BotApi $alternative_api;
+    protected array $tmpfiles;
 
 
     public function __construct(BotApi $api, string|MessageText $prefix='') {
@@ -26,6 +28,17 @@ class Proxy {
         }
     }
     
+    public function __destruct() {
+        foreach ($this->tmpfiles as $file) {
+            unlink($file);
+        }
+    }
+    
+    public function setAlternativeApi(BotApi $api) {
+        $this->alternative_api = $api;
+    }
+
+
     public function proxy(Message $message, int $to, ?int $message_thread_id=null) {
         if ($message->getAnimation()) {
             $message_id = $this->proxyAnimation($message, $to, $message_thread_id);
@@ -80,16 +93,35 @@ class Proxy {
         
         return $current_file_id;
     }
+    
+    protected function getPhotoToSend(Message $message) {
+        $file_id = $this->getPhotoFileId($message);
+        return $this->getFileToSend($file_id);
+    }
+    
+    protected function getFileToSend(string $file_id) {
+
+        if (!isset($this->alternative_api)) {
+            return $file_id;
+        }
+        
+        $tmpfile = tempnam(sys_get_temp_dir(), 'pxy');
+        $file_data = $this->alternative_api->downloadFile($file_id);
+        file_put_contents($tmpfile, $file_data);
+        
+        $this->tmpfiles[] = $tmpfile;
+        return new \CURLFile($tmpfile);
+    }
 
     protected function proxyAnimation(Message $message, int $to, ?int $message_thread_id) : int {
 
         $text = new MessageText($message->getCaption(), $message->getCaptionEntities());
         $text->addPrefix($this->prefix);
         
-        $answer = Message::fromResponse($this->api->call('sendAudio', [
+        $answer = Message::fromResponse($this->api->call('sendAnimation', [
             'chat_id' => $to,
             'message_thread_id' => $message_thread_id,
-            'animation' => $message->getAnimation()->getFileId(),
+            'animation' => $this->getFileToSend($message->getAnimation()->getFileId()),
             'caption' => $text->getText(),
             'caption_entities' => $text->getEntitiesAsJson(),
             'reply_parameters' => $this->getReplyParameters($message, $to)
@@ -105,7 +137,7 @@ class Proxy {
         $answer = Message::fromResponse($this->api->call('sendAudio', [
             'chat_id' => $to,
             'message_thread_id' => $message_thread_id,
-            'audio' => $message->getAudio()->getFileId(),
+            'audio' => $this->getFileToSend($message->getAudio()->getFileId()),
             'caption' => $text->getText(),
             'caption_entities' => $text->getEntitiesAsJson(),
             'reply_parameters' => $this->getReplyParameters($message, $to)
@@ -121,7 +153,7 @@ class Proxy {
         $answer = Message::fromResponse($this->api->call('sendDocument', [
             'chat_id' => $to,
             'message_thread_id' => $message_thread_id,
-            'document' => $message->getDocument()->getFileId(),
+            'document' => $this->getFileToSend($message->getDocument()->getFileId()),
             'caption' => $text->getText(),
             'caption_entities' => $text->getEntitiesAsJson(),
             'reply_parameters' => $this->getReplyParameters($message, $to)
@@ -134,16 +166,18 @@ class Proxy {
         $text = new MessageText($message->getCaption(), $message->getCaptionEntities());
         $text->addPrefix($this->prefix);
         
-        $answer = Message::fromResponse($this->api->call('sendPhoto', [
+        $params = [
             'chat_id' => $to,
             'message_thread_id' => $message_thread_id,
-            'photo' => $this->getPhotoFileId($message),
+            'photo' => $this->getPhotoToSend($message),
             'caption' => $text->getText(),
             'caption_entities' => $text->getEntitiesAsJson(),
 //            'show_caption_above_media' => $message['show_caption_above_media'],
 //            'has_spoiler' => $message->getHasMediaSpoiler(),
             'reply_parameters' => $this->getReplyParameters($message, $to),
-        ]));
+        ];
+        
+        $answer = Message::fromResponse($this->api->call('sendPhoto', $params));
         
         return $answer->getMessageId();
     }
@@ -152,7 +186,7 @@ class Proxy {
         $answer = Message::fromResponse($this->api->call('sendVoice', [
             'chat_id' => $to,
             'message_thread_id' => $message_thread_id,
-            'sticker' => $message->getSticker()->getFileId(),
+            'sticker' => $this->getFileToSend($message->getSticker()->getFileId()),
             'reply_parameters' => $this->getReplyParameters($message, $to)
         ]));
         
@@ -166,7 +200,7 @@ class Proxy {
         $answer = Message::fromResponse($this->api->call('sendVideo', [
             'chat_id' => $to,
             'message_thread_id' => $message_thread_id,
-            'video' => $message->getVideo()->getFileId(),
+            'video' => $this->getFileToSend($message->getVideo()->getFileId()),
             'caption' => $text->getText(),
             'caption_entities' => $text->getEntitiesAsJson(),
             'reply_parameters' => $this->getReplyParameters($message, $to)
@@ -182,7 +216,7 @@ class Proxy {
         $answer = Message::fromResponse($this->api->call('sendVoice', [
             'chat_id' => $to,
             'message_thread_id' => $message_thread_id,
-            'voice' => $message->getVoice()->getFileId(),
+            'voice' => $this->getFileToSend($message->getVoice()->getFileId()),
             'caption' => $text->getText(),
             'caption_entities' => $text->getEntitiesAsJson(),
             'reply_parameters' => $this->getReplyParameters($message, $to)
