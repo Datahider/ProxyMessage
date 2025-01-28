@@ -21,7 +21,7 @@ class MessageText {
     
     public function getText() {
         if (empty($this->text)) {
-            return null;
+            return "";
         } 
         return $this->text;
     }
@@ -34,14 +34,14 @@ class MessageText {
         }
         
         if (empty($result)) {
-            return null;
+            return [];
         }
         return '['. implode(',', $result). ']';
     }
     
     public function getEntities() {
         if (empty($this->entities)) {
-            return null;
+            return [];
         }
         return $this->entities;
     }
