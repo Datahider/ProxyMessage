@@ -29,8 +29,10 @@ class Proxy {
     }
     
     public function __destruct() {
-        foreach ($this->tmpfiles as $file) {
-            unlink($file);
+        if (isset($this->tmpfiles)) {
+            foreach ($this->tmpfiles as $file) {
+                unlink($file);
+            }
         }
     }
     
